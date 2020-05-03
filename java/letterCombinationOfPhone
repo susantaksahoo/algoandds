@@ -18,43 +18,51 @@
 		return list;
 		
 	}
-  -------------------------------
-  	/*Iterative way using BFS
-	 * Hashmap the list of chars.
-	 * Use queue to append all possible candidates. BFS
+  /*
+	 * Recursion version 
+	 * Assuming the average number of letters on every number is m, and the length of digits string is n, then the complexity is O(mn).
 	 */
 	
-	public static List<String> letterCombinationsBFS(String digits) {
-		  List<String> l = new ArrayList<>();
-		    if (digits == null || digits.length() == 0) {
-		        return l;
-		    }
-		    
-	    HashMap<Character, String> map = new HashMap<>();
-	    map.put('2', "abc");
-	    map.put('3', "def");
-	    map.put('4', "ghi");
-	    map.put('5', "jkl");
-	    map.put('6', "mno");
-	    map.put('7', "pqrs");
-	    map.put('8', "tuv");
-	    map.put('9', "wxyz");
-	 	 
-	    l.add("");
-	 
-	    for (int i = 0; i < digits.length(); i++) {
-	        ArrayList<String> temp = new ArrayList<>();
-	        String option = map.get(digits.charAt(i));
-	 
-	        for (int j = 0; j < l.size(); j++) {
-	            for (int p = 0; p < option.length(); p++) {
-	                temp.add(new StringBuilder(l.get(j)).append(option.charAt(p)).toString());
-	            }
-	        }
-	 
-	        l.clear();
-	        l.addAll(temp);
+	 public List<String> letterCombinationsRecursion(String digits) {
+	        String[] letters = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+	        List<String> rec = new LinkedList<>();
+	        StringBuilder string = new StringBuilder();
+	        letterCombinations(digits, 0, letters, string, rec);
+	        return rec;
 	    }
-	 
-	    return l;
+	    
+	    private void letterCombinations(String digits, int number, String[] letters, StringBuilder string, List<String> rec) {
+	        if (digits.length() == number) {
+	            rec.add(string.toString());
+	            return;
+	        }
+	        String letter = letters[digits.charAt(number) - '2'];
+	        for (int i = 0; i < letter.length(); i++) {
+	            string.append(letter.charAt(i));
+	            letterCombinations(digits, number + 1, letters, string, rec);
+	            string.deleteCharAt(string.length() - 1);
+	        }
+	    }
+	    
+	    /*
+	 * Iterative way
+	 * Assuming the average number of letters on every number is m, and the length of digits string is n, then the complexity is O(mn).
+	 */
+
+	public static List<String> letterCombinations(String digits) {
+		String[] letters = { "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+		LinkedList<String> list = new LinkedList<>();
+		list.add("");
+		for (int i = 0; i < digits.length(); i++) {
+			int num = digits.charAt(i) - '2';
+			int size = list.size();
+			for (int k = 0; k < size; k++) {
+				String tmp = list.pop();
+				for (int j = 0; j < letters[num].length(); j++)
+					list.add(tmp + letters[num].charAt(j));
+			}
+		}
+		List<String> rec = new LinkedList<>();
+		rec.addAll(list);
+		return rec;
 	}
